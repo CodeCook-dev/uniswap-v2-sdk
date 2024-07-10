@@ -361,7 +361,7 @@ var Pair = /*#__PURE__*/function () {
     var inputReserve = this.reserveOf(inputAmount.currency);
     var outputReserve = this.reserveOf(inputAmount.currency.equals(this.token0) ? this.token1 : this.token0);
     var percentAfterSellFees = calculateFotFees ? this.derivePercentAfterSellFees(inputAmount) : ZERO_PERCENT;
-    var inputAmountAfterTax = percentAfterSellFees.greaterThan(ZERO_PERCENT) ? CurrencyAmount.fromRawAmount(inputAmount.currency, percentAfterSellFees.multiply(inputAmount).quotient // fraction.quotient will round down by itself, which is desired
+    var inputAmountAfterTax = percentAfterSellFees.greaterThan(0) ? CurrencyAmount.fromRawAmount(inputAmount.currency, percentAfterSellFees.multiply(inputAmount).quotient // fraction.quotient will round down by itself, which is desired
     ) : inputAmount;
     var inputAmountWithFeeAndAfterTax = JSBI.multiply(inputAmountAfterTax.quotient, _997);
     var numerator = JSBI.multiply(inputAmountWithFeeAndAfterTax, outputReserve.quotient);
@@ -374,7 +374,7 @@ var Pair = /*#__PURE__*/function () {
     }
 
     var percentAfterBuyFees = calculateFotFees ? this.derivePercentAfterBuyFees(outputAmount) : ZERO_PERCENT;
-    var outputAmountAfterTax = percentAfterBuyFees.greaterThan(ZERO_PERCENT) ? CurrencyAmount.fromRawAmount(outputAmount.currency, outputAmount.multiply(percentAfterBuyFees).quotient // fraction.quotient will round down by itself, which is desired
+    var outputAmountAfterTax = percentAfterBuyFees.greaterThan(0) ? CurrencyAmount.fromRawAmount(outputAmount.currency, outputAmount.multiply(percentAfterBuyFees).quotient // fraction.quotient will round down by itself, which is desired
     ) : outputAmount;
 
     if (JSBI.equal(outputAmountAfterTax.quotient, ZERO)) {
@@ -434,7 +434,7 @@ var Pair = /*#__PURE__*/function () {
 
     !this.involvesToken(outputAmount.currency) ? process.env.NODE_ENV !== "production" ? invariant(false, 'TOKEN') : invariant(false) : void 0;
     var percentAfterBuyFees = calculateFotFees ? this.derivePercentAfterBuyFees(outputAmount) : ZERO_PERCENT;
-    var outputAmountBeforeTax = percentAfterBuyFees.greaterThan(ZERO_PERCENT) ? CurrencyAmount.fromRawAmount(outputAmount.currency, JSBI.add(outputAmount.divide(percentAfterBuyFees).quotient, ONE) // add 1 for rounding up
+    var outputAmountBeforeTax = percentAfterBuyFees.greaterThan(0) ? CurrencyAmount.fromRawAmount(outputAmount.currency, JSBI.add(outputAmount.divide(percentAfterBuyFees).quotient, ONE) // add 1 for rounding up
     ) : outputAmount;
 
     if (JSBI.equal(this.reserve0.quotient, ZERO) || JSBI.equal(this.reserve1.quotient, ZERO) || JSBI.greaterThanOrEqual(outputAmount.quotient, this.reserveOf(outputAmount.currency).quotient) || JSBI.greaterThanOrEqual(outputAmountBeforeTax.quotient, this.reserveOf(outputAmount.currency).quotient)) {
@@ -448,7 +448,7 @@ var Pair = /*#__PURE__*/function () {
     var inputAmount = CurrencyAmount.fromRawAmount(outputAmount.currency.equals(this.token0) ? this.token1 : this.token0, JSBI.add(JSBI.divide(numerator, denominator), ONE) // add 1 here is part of the formula, no rounding needed here, since there will not be decimal at this point
     );
     var percentAfterSellFees = calculateFotFees ? this.derivePercentAfterSellFees(inputAmount) : ZERO_PERCENT;
-    var inputAmountBeforeTax = percentAfterSellFees.greaterThan(ZERO_PERCENT) ? CurrencyAmount.fromRawAmount(inputAmount.currency, JSBI.add(inputAmount.divide(percentAfterSellFees).quotient, ONE) // add 1 for rounding up
+    var inputAmountBeforeTax = percentAfterSellFees.greaterThan(0) ? CurrencyAmount.fromRawAmount(inputAmount.currency, JSBI.add(inputAmount.divide(percentAfterSellFees).quotient, ONE) // add 1 for rounding up
     ) : inputAmount;
     return [inputAmountBeforeTax, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount))];
   };
@@ -757,7 +757,7 @@ var Trade = /*#__PURE__*/function () {
   var _proto = Trade.prototype;
 
   _proto.minimumAmountOut = function minimumAmountOut(slippageTolerance) {
-    !!slippageTolerance.lessThan(ZERO) ? process.env.NODE_ENV !== "production" ? invariant(false, 'SLIPPAGE_TOLERANCE') : invariant(false) : void 0;
+    !!slippageTolerance.lessThan(0) ? process.env.NODE_ENV !== "production" ? invariant(false, 'SLIPPAGE_TOLERANCE') : invariant(false) : void 0;
 
     if (this.tradeType === TradeType.EXACT_OUTPUT) {
       return this.outputAmount;
@@ -773,7 +773,7 @@ var Trade = /*#__PURE__*/function () {
   ;
 
   _proto.maximumAmountIn = function maximumAmountIn(slippageTolerance) {
-    !!slippageTolerance.lessThan(ZERO) ? process.env.NODE_ENV !== "production" ? invariant(false, 'SLIPPAGE_TOLERANCE') : invariant(false) : void 0;
+    !!slippageTolerance.lessThan(0) ? process.env.NODE_ENV !== "production" ? invariant(false, 'SLIPPAGE_TOLERANCE') : invariant(false) : void 0;
 
     if (this.tradeType === TradeType.EXACT_INPUT) {
       return this.inputAmount;
@@ -828,7 +828,7 @@ var Trade = /*#__PURE__*/function () {
       var pair = pairs[i]; // pair irrelevant
 
       if (!pair.token0.equals(amountIn.currency) && !pair.token1.equals(amountIn.currency)) continue;
-      if (pair.reserve0.equalTo(ZERO) || pair.reserve1.equalTo(ZERO)) continue;
+      if (pair.reserve0.equalTo(0) || pair.reserve1.equalTo(0)) continue;
       var amountOut = void 0;
 
       try {
@@ -917,7 +917,7 @@ var Trade = /*#__PURE__*/function () {
       var pair = pairs[i]; // pair irrelevant
 
       if (!pair.token0.equals(amountOut.currency) && !pair.token1.equals(amountOut.currency)) continue;
-      if (pair.reserve0.equalTo(ZERO) || pair.reserve1.equalTo(ZERO)) continue;
+      if (pair.reserve0.equalTo(0) || pair.reserve1.equalTo(0)) continue;
       var amountIn = void 0;
 
       try {

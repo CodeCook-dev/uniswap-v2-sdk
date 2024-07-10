@@ -9,7 +9,7 @@ import {
   sortedInsert,
   TradeType
 } from '@uniswap/sdk-core'
-import { ONE, ZERO } from '../constants'
+import { ONE } from '../constants'
 import invariant from 'tiny-invariant'
 
 import { Pair } from './pair'
@@ -184,7 +184,7 @@ export class Trade<TInput extends Currency, TOutput extends Currency, TTradeType
    * @param slippageTolerance tolerance of unfavorable slippage from the execution price of this trade
    */
   public minimumAmountOut(slippageTolerance: Percent): CurrencyAmount<TOutput> {
-    invariant(!slippageTolerance.lessThan(ZERO), 'SLIPPAGE_TOLERANCE')
+    invariant(!slippageTolerance.lessThan(0), 'SLIPPAGE_TOLERANCE')
     if (this.tradeType === TradeType.EXACT_OUTPUT) {
       return this.outputAmount
     } else {
@@ -201,7 +201,7 @@ export class Trade<TInput extends Currency, TOutput extends Currency, TTradeType
    * @param slippageTolerance tolerance of unfavorable slippage from the execution price of this trade
    */
   public maximumAmountIn(slippageTolerance: Percent): CurrencyAmount<TInput> {
-    invariant(!slippageTolerance.lessThan(ZERO), 'SLIPPAGE_TOLERANCE')
+    invariant(!slippageTolerance.lessThan(0), 'SLIPPAGE_TOLERANCE')
     if (this.tradeType === TradeType.EXACT_INPUT) {
       return this.inputAmount
     } else {
@@ -245,7 +245,7 @@ export class Trade<TInput extends Currency, TOutput extends Currency, TTradeType
       const pair = pairs[i]
       // pair irrelevant
       if (!pair.token0.equals(amountIn.currency) && !pair.token1.equals(amountIn.currency)) continue
-      if (pair.reserve0.equalTo(ZERO) || pair.reserve1.equalTo(ZERO)) continue
+      if (pair.reserve0.equalTo(0) || pair.reserve1.equalTo(0)) continue
 
       let amountOut: CurrencyAmount<Token>
       try {
@@ -339,7 +339,7 @@ export class Trade<TInput extends Currency, TOutput extends Currency, TTradeType
       const pair = pairs[i]
       // pair irrelevant
       if (!pair.token0.equals(amountOut.currency) && !pair.token1.equals(amountOut.currency)) continue
-      if (pair.reserve0.equalTo(ZERO) || pair.reserve1.equalTo(ZERO)) continue
+      if (pair.reserve0.equalTo(0) || pair.reserve1.equalTo(0)) continue
 
       let amountIn: CurrencyAmount<Token>
       try {

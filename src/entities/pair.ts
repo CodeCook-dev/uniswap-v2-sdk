@@ -193,7 +193,7 @@ export class Pair {
     const outputReserve = this.reserveOf(inputAmount.currency.equals(this.token0) ? this.token1 : this.token0)
 
     const percentAfterSellFees = calculateFotFees ? this.derivePercentAfterSellFees(inputAmount) : ZERO_PERCENT
-    const inputAmountAfterTax = percentAfterSellFees.greaterThan(ZERO_PERCENT)
+    const inputAmountAfterTax = percentAfterSellFees.greaterThan(0)
       ? CurrencyAmount.fromRawAmount(
           inputAmount.currency,
           percentAfterSellFees.multiply(inputAmount).quotient // fraction.quotient will round down by itself, which is desired
@@ -213,7 +213,7 @@ export class Pair {
     }
 
     const percentAfterBuyFees = calculateFotFees ? this.derivePercentAfterBuyFees(outputAmount) : ZERO_PERCENT
-    const outputAmountAfterTax = percentAfterBuyFees.greaterThan(ZERO_PERCENT)
+    const outputAmountAfterTax = percentAfterBuyFees.greaterThan(0)
       ? CurrencyAmount.fromRawAmount(
           outputAmount.currency,
           outputAmount.multiply(percentAfterBuyFees).quotient // fraction.quotient will round down by itself, which is desired
@@ -277,7 +277,7 @@ export class Pair {
   ): [CurrencyAmount<Token>, Pair] {
     invariant(this.involvesToken(outputAmount.currency), 'TOKEN')
     const percentAfterBuyFees = calculateFotFees ? this.derivePercentAfterBuyFees(outputAmount) : ZERO_PERCENT
-    const outputAmountBeforeTax = percentAfterBuyFees.greaterThan(ZERO_PERCENT)
+    const outputAmountBeforeTax = percentAfterBuyFees.greaterThan(0)
       ? CurrencyAmount.fromRawAmount(
           outputAmount.currency,
           JSBI.add(outputAmount.divide(percentAfterBuyFees).quotient, ONE) // add 1 for rounding up
@@ -304,7 +304,7 @@ export class Pair {
     )
 
     const percentAfterSellFees = calculateFotFees ? this.derivePercentAfterSellFees(inputAmount) : ZERO_PERCENT
-    const inputAmountBeforeTax = percentAfterSellFees.greaterThan(ZERO_PERCENT)
+    const inputAmountBeforeTax = percentAfterSellFees.greaterThan(0)
       ? CurrencyAmount.fromRawAmount(
           inputAmount.currency,
           JSBI.add(inputAmount.divide(percentAfterSellFees).quotient, ONE) // add 1 for rounding up
