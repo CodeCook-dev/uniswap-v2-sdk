@@ -369,10 +369,10 @@ var Pair = /*#__PURE__*/function () {
     var percentAfterSellFees = calculateFotFees ? this.derivePercentAfterSellFees(inputAmount) : ZERO_PERCENT;
     var inputAmountAfterTax = percentAfterSellFees.greaterThan(0) ? sdkCore.CurrencyAmount.fromRawAmount(inputAmount.currency, percentAfterSellFees.multiply(inputAmount).quotient // fraction.quotient will round down by itself, which is desired
     ) : inputAmount;
-    var inputAmountWithFeeAndAfterTax = JSBI.multiply(inputAmountAfterTax.quotient, _997);
-    var numerator = JSBI.multiply(inputAmountWithFeeAndAfterTax, outputReserve.quotient);
-    var denominator = JSBI.add(JSBI.multiply(inputReserve.quotient, _1000), inputAmountWithFeeAndAfterTax);
-    var outputAmount = sdkCore.CurrencyAmount.fromRawAmount(inputAmount.currency.equals(this.token0) ? this.token1 : this.token0, JSBI.divide(numerator, denominator) // JSBI.divide will round down by itself, which is desired
+    var inputAmountWithFeeAndAfterTax = inputAmountAfterTax.multiply(997);
+    var numerator = inputAmountWithFeeAndAfterTax.multiply(outputReserve.quotient);
+    var denominator = inputReserve.multiply(1000).add(inputAmountWithFeeAndAfterTax);
+    var outputAmount = sdkCore.CurrencyAmount.fromRawAmount(inputAmount.currency.equals(this.token0) ? this.token1 : this.token0, numerator.divide(denominator).quotient // JSBI.divide will round down by itself, which is desired
     );
 
     if (JSBI.equal(outputAmount.quotient, ZERO)) {

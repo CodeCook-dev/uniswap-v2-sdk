@@ -200,12 +200,12 @@ export class Pair {
         )
       : inputAmount
 
-    const inputAmountWithFeeAndAfterTax = JSBI.multiply(inputAmountAfterTax.quotient, _997)
-    const numerator = JSBI.multiply(inputAmountWithFeeAndAfterTax, outputReserve.quotient)
-    const denominator = JSBI.add(JSBI.multiply(inputReserve.quotient, _1000), inputAmountWithFeeAndAfterTax)
+    const inputAmountWithFeeAndAfterTax = inputAmountAfterTax.multiply(997)
+    const numerator = inputAmountWithFeeAndAfterTax.multiply(outputReserve.quotient)
+    const denominator = inputReserve.multiply(1000).add(inputAmountWithFeeAndAfterTax)
     const outputAmount = CurrencyAmount.fromRawAmount(
       inputAmount.currency.equals(this.token0) ? this.token1 : this.token0,
-      JSBI.divide(numerator, denominator) // JSBI.divide will round down by itself, which is desired
+      numerator.divide(denominator).quotient // JSBI.divide will round down by itself, which is desired
     )
 
     if (JSBI.equal(outputAmount.quotient, ZERO)) {
