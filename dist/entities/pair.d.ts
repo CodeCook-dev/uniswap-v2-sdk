@@ -97,6 +97,7 @@ export declare class Pair {
      * @param calculateFotFees
      */
     getOutputAmount(inputAmount: CurrencyAmount<Token>, calculateFotFees?: boolean): [CurrencyAmount<Token>, Pair];
+    getOutputAmount0(inputAmount: CurrencyAmount<Token>, calculateFotFees?: boolean): [any, CurrencyAmount<Token>, Pair];
     /**
      * getAmountIn is the linear algebra of reserve ratio against amountIn:amountOut.
      * https://ethereum.stackexchange.com/questions/101629/what-is-math-for-uniswap-calculates-the-amountout-and-amountin-why-997-and-1000
