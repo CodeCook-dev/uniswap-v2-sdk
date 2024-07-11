@@ -201,12 +201,16 @@ export class Pair {
       : inputAmount
 
     const inputAmountWithFeeAndAfterTax = inputAmountAfterTax.multiply(997)
+    console.log("inputAmountWithFeeAndAfterTax", inputAmountWithFeeAndAfterTax)
     const numerator = inputAmountWithFeeAndAfterTax.multiply(outputReserve.quotient)
+    console.log("numerator", numerator)
     const denominator = inputReserve.multiply(1000).add(inputAmountWithFeeAndAfterTax)
+    console.log("denominator", denominator)
     const outputAmount = CurrencyAmount.fromRawAmount(
       inputAmount.currency.equals(this.token0) ? this.token1 : this.token0,
       numerator.divide(denominator).quotient // JSBI.divide will round down by itself, which is desired
     )
+    console.log("outputAmount", outputAmount)
 
     if (JSBI.equal(outputAmount.quotient, ZERO)) {
       throw new InsufficientInputAmountError()
